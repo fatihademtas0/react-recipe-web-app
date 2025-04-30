@@ -1,12 +1,16 @@
 import React from "react";
 
-function IngredientList({ ingredient, handleClick }) {
+function IngredientList({ ingredient, getRecipe, language }) {
     return (
         <div>
             <section>
                 {ingredient.length > 0 && (
                     <>
-                        <h2>Ingredients on hand:</h2>
+                        <h2>
+                            {language === "en"
+                                ? "Ingredients on hand:"
+                                : "Elimizdeki malzemeler"}
+                        </h2>
 
                         {/* ✅ UL bir kez, LI'ler tek tek key ile */}
                         <ul className='ingredients-list' aria-live='polite'>
@@ -20,13 +24,21 @@ function IngredientList({ ingredient, handleClick }) {
                 {ingredient.length > 3 && (
                     <div className='get-recipe-container'>
                         <div>
-                            <h3>Ready for a recipe?</h3>
+                            <h3>
+                                {language === "en"
+                                    ? "Ready for a recipe?"
+                                    : "Tarifi almaya hazır mısın?"}
+                            </h3>
                             <p>
-                                Generate a recipe from your list of ingredients.
+                                {language === "en"
+                                    ? "Generate a recipe from your list of ingredients."
+                                    : "Malzeme listenizden bir tarif oluşturun."}
                             </p>
                         </div>
 
-                        <button onClick={handleClick}>Get a recipe</button>
+                        <button onClick={getRecipe}>
+                            {language === "en" ? "Get a recipe" : "Tarif alın"}
+                        </button>
                     </div>
                 )}
             </section>

@@ -1,22 +1,17 @@
 import React, { useState } from "react";
 import RecipeShown from "./RecipeShown";
 import IngredientList from "./IngredientList";
+import { getRecipeFromMistral } from "../ai";
 
 function Main() {
     const [ingredients, setIngredients] = useState([]);
 
-    const [recipeShown, setRecipeShown] = useState(false);
+    const [recipe, setRecipe] = useState("");
 
-    /*
-    function handleSubmit(e) {
-        e.preventDefault();
+    const [language, setLanguage] = useState("en");
 
-        if (inputValue.trim() === "") return;
+    const [inputValue, setInputValue] = useState("");
 
-        setIngredients((prev) => [...prev, inputValue]);
-        setInputValue("");
-    }
-    */
     function addIngredient(formData) {
         const newIngredient = formData.get("ingredient");
 
@@ -25,55 +20,80 @@ function Main() {
         setIngredients((prev) => [...prev, newIngredient]);
     }
 
-    function handleClick() {
-        setRecipeShown(true);
+    function handleInputChange(e) {
+        setInputValue(e.target.value);
+    }
+
+    function handleFormSubmit(e) {
+        e.preventDefault();
+
+        const trimmed = inputValue.trim();
+        if (trimmed === "") return;
+
+        setIngredients((prev) => [...prev, trimmed]);
+        setInputValue(""); // input temizleniyor
+    }
+
+    async function getRecipe() {
+        const recipeMarkdown = await getRecipeFromMistral(
+            ingredients,
+            language
+        );
+
+        setRecipe(recipeMarkdown);
+
+        console.log(recipeMarkdown);
+    }
+
+    function handleChange(e) {
+        e.preventDefault();
+        setLanguage(e.target.value);
     }
 
     return (
         <main>
-            <form action={addIngredient} className='add-ingredient-form'>
+            <form onSubmit={handleFormSubmit} className='add-ingredient-form'>
                 <input
-                    aria-label='Add ingredient'
+                    aria-label={
+                        language === "en" ? "Add ingredient" : "Malzeme ekle"
+                    }
                     type='text'
-                    placeholder='e.g. avacado'
+                    placeholder={language === "en" ? "e.g. avacado" : "tavuk"}
                     name='ingredient'
+                    value={inputValue}
+                    onChange={handleInputChange}
                 />
 
-                <button>Add Ingredient</button>
+                <button>
+                    {language === "en" ? "Add ingredient" : "Malzeme ekle"}
+                </button>
+
+                <label htmlFor='language' className='language-label'>
+                    {language === "en" ? "Language :" : "Dil seçin :"}
+                </label>
+                <select
+                    id='language'
+                    name='language'
+                    value={language}
+                    onChange={handleChange}
+                    className='language-select'
+                >
+                    <option value='en'>
+                        {language === "en" ? "English" : "İngilizce"}
+                    </option>
+                    <option value='tr'>
+                        {language !== "en" ? "Türkçe" : "Turkish"}
+                    </option>
+                </select>
             </form>
 
             <IngredientList
                 ingredient={ingredients}
-                handleClick={handleClick}
+                getRecipe={getRecipe}
+                language={language}
             />
 
-            {/*<section>
-                {ingredients.length > 0 && (
-                    <>
-                        <h2>Ingredients on hand:</h2>
-
-                        <ul className='ingredients-list' aria-live='polite'>
-                            {ingredients.map((ingredient, index) => (
-                                <li key={index}>{ingredient}</li>
-                            ))}
-                        </ul>
-                    </>
-                )}
-
-                {ingredients.length > 3 && (
-                    <div className='get-recipe-container'>
-                        <div>
-                            <h3>Ready for a recipe?</h3>
-                            <p>
-                                Generate a recipe from your list of ingredients.
-                            </p>
-                        </div>
-
-                        <button onClick={handleClick}>Get a recipe</button>
-                    </div>
-                )}
-            </section> */}
-            {recipeShown && <RecipeShown />}
+            {recipe && <RecipeShown recipe={recipe} />}
         </main>
     );
 }

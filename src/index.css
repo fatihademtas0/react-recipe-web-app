@@ -99,3 +99,29 @@ main {
     background-color: rgb(139, 69, 69);
     transition: 0.4s;
 }
+
+.suggested-recipe-container {
+    color: #2d343e;
+    line-height: 28px;
+    font-size: 1.125rem;
+    font-weight: 400;
+}
+
+.language-label {
+    display: flex;
+    align-items: center;
+    font-weight: bold;
+    font-size: 18px;
+    margin-right: 10px;
+}
+
+.language-select {
+    font-family: sans-serif;
+    border-radius: 6px;
+    border: none;
+    background-color: #141413;
+    color: #fafaf8;
+    width: 80px;
+    font-weight: 500;
+    cursor: pointer;
+}
