@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import RecipeShown from "./RecipeShown";
+import IngredientList from "./IngredientList";
 
 function Main() {
     const [ingredients, setIngredients] = useState([]);
@@ -38,15 +39,19 @@ function Main() {
                     name='ingredient'
                 />
 
-                <button>Add ingredient</button>
+                <button>Add Ingredient</button>
             </form>
 
-            <section>
+            <IngredientList
+                ingredient={ingredients}
+                handleClick={handleClick}
+            />
+
+            {/*<section>
                 {ingredients.length > 0 && (
                     <>
                         <h2>Ingredients on hand:</h2>
 
-                        {/* ✅ UL bir kez, LI'ler tek tek key ile */}
                         <ul className='ingredients-list' aria-live='polite'>
                             {ingredients.map((ingredient, index) => (
                                 <li key={index}>{ingredient}</li>
@@ -67,7 +72,7 @@ function Main() {
                         <button onClick={handleClick}>Get a recipe</button>
                     </div>
                 )}
-            </section>
+            </section> */}
             {recipeShown && <RecipeShown />}
         </main>
     );
